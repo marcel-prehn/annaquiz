@@ -1,8 +1,9 @@
 package app
 
 import (
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	handler2 "marcel.works/annaquiz/app/handler"
+	"marcel.works/annaquiz/app/handler"
 )
 
 type app struct {
@@ -17,12 +18,13 @@ func NewApp() App {
 }
 
 func (a *app) Run() {
-	handler := handler2.NewHandler()
+	apiHandler := handler.NewHandler()
 	router := gin.Default()
-	router.POST("/api/quiz", handler.NewQuiz)
-	router.GET("/api/quiz/:uuid", handler.GetQuiz)
-	router.POST("/api/quiz/:uuid/answers", handler.NewAnswers)
-	router.GET("/api/quiz/:uuid/answers", handler.GetAnswers)
-	router.GET("/api/quiz/:uuid/random", handler.GetRandomAnswers)
+	router.Use(static.Serve("/", static.LocalFile("./ui/build/", false)))
+	router.POST("/api/quiz", apiHandler.NewQuiz)
+	router.GET("/api/quiz/:uuid", apiHandler.GetQuiz)
+	router.POST("/api/quiz/:uuid/answers", apiHandler.NewAnswers)
+	router.GET("/api/quiz/:uuid/answers", apiHandler.GetAnswers)
+	router.GET("/api/quiz/:uuid/random", apiHandler.GetRandomAnswers)
 	router.Run(":8080")
 }

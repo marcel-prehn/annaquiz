@@ -3,6 +3,7 @@ module marcel.works/annaquiz
 go 1.15
 
 require (
+	github.com/gin-contrib/static v0.0.0-20200916080430-d45d9a37d28e
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
@@ -15,9 +16,9 @@ require (
 	github.com/tidwall/gjson v1.6.3 // indirect
 	github.com/tidwall/match v1.0.2 // indirect
 	github.com/tidwall/rtree v0.0.0-20201103190202-0d877048965d // indirect
-	github.com/ugorji/go v1.1.13 // indirect
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
-	golang.org/x/sys v0.0.0-20201029080932-201ba4db2418 // indirect
+	github.com/ugorji/go v1.2.0 // indirect
+	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9 // indirect
+	golang.org/x/sys v0.0.0-20201113233024-12cec1faf1ba // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
