@@ -11,7 +11,6 @@ export const ShowQuiz = () => {
   const {uuid} = useParams<{ uuid: string }>()
   const [quiz, setQuiz] = useState({} as Quiz)
   const [isHidden, setIsHidden] = useState(true)
-  const [submitDisabled, setSubmitDisabled] = useState(false)
 
   useEffect(() => {
     fetch(`/api/quiz/${uuid}`)

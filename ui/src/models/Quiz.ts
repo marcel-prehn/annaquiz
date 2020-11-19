@@ -2,7 +2,7 @@ export interface Quiz {
     uuid?: string,
     creator: string,
     questions: Array<Question>,
-    timestamp: string,
+    timestamp?: string,
 }
 
 export interface Question {

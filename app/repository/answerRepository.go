@@ -18,7 +18,7 @@ type AnswerRepository interface {
 }
 
 func NewAnswerRepository() AnswerRepository {
-	db, _ := buntdb.Open("./db/answer.db")
+	db, _ := buntdb.Open(":memory:")
 	return &answerRepository{database: db}
 }
 

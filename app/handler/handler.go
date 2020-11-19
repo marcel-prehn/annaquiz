@@ -14,6 +14,7 @@ type handler struct {
 type Handler interface {
 	NewQuiz(c *gin.Context)
 	GetQuiz(c *gin.Context)
+	GetQuizzes(c *gin.Context)
 	NewAnswers(c *gin.Context)
 	GetAnswers(c *gin.Context)
 	GetRandomAnswers(c *gin.Context)
@@ -47,6 +48,16 @@ func (h *handler) GetQuiz(c *gin.Context) {
 		c.Status(404)
 	} else {
 		c.JSON(200, quiz)
+	}
+}
+
+func (h *handler) GetQuizzes(c *gin.Context) {
+	quizzes, err := h.service.GetAllQuizzes()
+	if err != nil {
+		log.Println("could not get all quizzes")
+		c.Status(500)
+	} else {
+		c.JSON(200, quizzes)
 	}
 }
 

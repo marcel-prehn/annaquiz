@@ -22,6 +22,7 @@ func (a *app) Run() {
 	router := gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./ui/build/", false)))
 	router.POST("/api/quiz", apiHandler.NewQuiz)
+	router.GET("/api/quiz", apiHandler.GetQuizzes)
 	router.GET("/api/quiz/:uuid", apiHandler.GetQuiz)
 	router.POST("/api/quiz/:uuid/answers", apiHandler.NewAnswers)
 	router.GET("/api/quiz/:uuid/answers", apiHandler.GetAnswers)

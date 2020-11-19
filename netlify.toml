@@ -1,7 +1,0 @@
-[build]
-command = "./build.sh"
-functions = "functions"
-publish = "ui/build"
-
-[build.environment]
-GO111MODULE = "on"

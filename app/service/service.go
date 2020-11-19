@@ -17,6 +17,7 @@ type Service interface {
 	SaveQuiz(quiz model.Quiz) (string, error)
 	SaveAnswers(quizUuid string, answers []model.Answer) error
 	GetQuiz(quizUuid string) (model.Quiz, error)
+	GetAllQuizzes() ([]model.Quiz, error)
 	GetAnswer(answerUuid string) (model.Answer, error)
 	GetAnswersByQuiz(quizUuid string) ([]model.Answer, error)
 	GetRandomAnswersByQuiz(quizUuid string) ([]model.Answer, error)
@@ -52,6 +53,10 @@ func (s *service) SaveAnswers(quizUuid string, answers []model.Answer) error {
 
 func (s *service) GetQuiz(quizUuid string) (model.Quiz, error) {
 	return s.quizRepository.Get(quizUuid)
+}
+
+func (s *service) GetAllQuizzes() ([]model.Quiz, error) {
+	return s.quizRepository.GetAll()
 }
 
 func (s *service) GetAnswer(answerUuid string) (model.Answer, error) {

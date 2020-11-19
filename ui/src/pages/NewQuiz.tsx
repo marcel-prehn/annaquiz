@@ -1,76 +1,61 @@
 import React, {useState} from "react";
 import {Box, Button, Heading, Main, TextInput} from "grommet";
 import {Notification} from "../components/Notification";
+import {useForm} from "react-hook-form";
+import {Quiz} from "../models/Quiz";
 
 export const NewQuiz = () => {
-    const [quiz, setQuiz] = useState({
-        uuid: "",
-        creator: "",
-        questions: [
-            {uuid: "", text: ""},
-            {uuid: "", text: ""},
-            {uuid: "", text: ""},
-        ],
+  const MAX_QUESTIONS = 3
+  const [quizUuid, setQuizUuid] = useState("")
+  const [isHidden, setHidden] = useState(true)
+  const {register, handleSubmit, errors} = useForm()
+
+  const onSubmit = (values: any) => {
+    const quiz: Quiz = {
+      creator: values.username,
+      questions: [
+        {text: values.question0},
+        {text: values.question1},
+        {text: values.question2},
+      ],
+    }
+
+    fetch("/api/quiz", {
+      method: "POST",
+      body: JSON.stringify(quiz)
     })
-    const [isHidden, setHidden] = useState(true)
-    const [submitDisabled, setSubmitDisabled] = useState(true)
+      .then(res => res.json())
+      .then(res => setQuizUuid(res))
+    setHidden(false)
+    console.log(JSON.stringify(quiz))
+  }
 
-    const addQuestion = (index: number, text: string) => {
-        const current = [...quiz.questions]
-        current[index].text = text
-        setQuiz({...quiz, questions: current})
-        check()
-    }
-
-    const check = () => {
-        if (quiz.questions.filter(q => q.text === "").length === 0 && quiz.creator !== "") {
-            setSubmitDisabled(false)
-        } else {
-            setSubmitDisabled(true)
-        }
-    }
-
-    const post = () => {
-        fetch("/api/quiz", {
-            method: "POST",
-            body: JSON.stringify(quiz)
-        })
-            .then(res => res.json())
-            .then(res => setQuiz({...quiz, uuid: res}))
-        setHidden(false)
-        console.log(JSON.stringify(quiz))
-    }
-
-    return (
-        <Main pad="large">
-            <Heading size={"small"}>Name</Heading>
-            <Box margin={"small"}>
-                <TextInput placeholder="Name"
-                           required
-                           value={quiz.creator}
-                           onChange={event => {
-                               setQuiz({...quiz, creator: event.target.value})
-                               check()
-                           }}/>
+  return (
+    <Main pad="large">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Heading size={"small"}>Name</Heading>
+        <Box margin={"small"}>
+          <TextInput placeholder="Name"
+                     name={"username"}
+                     maxLength={20}
+                     ref={register({required: true})}/>
+        </Box>
+        <Heading size={"small"}>Questions</Heading>
+        {Array.from({length: MAX_QUESTIONS}).map((item, index) => {
+          return (
+            <Box margin={"small"} key={`box-${index}`}>
+              <TextInput placeholder={`Question #${index + 1}`}
+                         name={`question${index}`}
+                         ref={register({required: true})}
+                         key={`question-${index}`}/>
             </Box>
-            <Heading size={"small"}>Questions</Heading>
-            {quiz.questions.map((question, index) => {
-                return (
-                    <Box margin={"small"} key={`box-${index}`}>
-                        <TextInput placeholder={`Question #${index + 1}`}
-                                   required
-                                   key={`question-${index}`}
-                                   value={question.text}
-                                   onChange={event => {
-                                       addQuestion(index, event.target.value)
-                                   }}/>
-                    </Box>
-                )
-            })}
-            <Box direction={"row"} margin={"small"} gap={"large"}>
-                <Button type={"submit"} label={"Send"} size={"large"} primary onClick={post} disabled={submitDisabled}/>
-                <Notification text={"Annaquiz created!"} target={`/quiz/${quiz.uuid}`} isHidden={isHidden}/>
-            </Box>
-        </Main>
-    )
+          )
+        })}
+        <Box direction={"row"} margin={"small"} gap={"large"}>
+          <Button type={"submit"} label={"Send"} size={"large"} primary/>
+          <Notification text={"Annaquiz created!"} target={`/quiz/${quizUuid}`} isHidden={isHidden}/>
+        </Box>
+      </form>
+    </Main>
+  )
 }
