@@ -2,8 +2,9 @@ package repository
 
 import (
 	"encoding/json"
-	"github.com/tidwall/buntdb"
 	"log"
+
+	"github.com/tidwall/buntdb"
 	"marcel.works/annaquiz/app/model"
 )
 
@@ -18,7 +19,7 @@ type AnswerRepository interface {
 }
 
 func NewAnswerRepository() AnswerRepository {
-	db, _ := buntdb.Open(":memory:")
+	db, _ := buntdb.Open("./db/answer.db")
 	return &answerRepository{database: db}
 }
 

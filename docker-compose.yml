@@ -1,0 +1,53 @@
+version: "3.3"
+services:
+  traefik:
+    image: traefik
+    container_name: traefik
+    command:
+      - --providers.docker=true
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.email=marcel.prehn@protonmail.com
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  annabingo:
+    image: mz47/annabingo:latest
+    container_name: annabingo
+    environment:
+      - ENV=LIVE
+    volumes:
+      - ./annabingo-data:/app/db
+    ports:
+      - 8000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.annabingo.rule=Host(`annabingo.de`) || Host(`www.annabingo.de`)
+      - traefik.http.routers.annabingo.entrypoints=websecure
+      - traefik.http.routers.annabingo.tls=true
+      - traefik.http.routers.annabingo.tls.certresolver=letsencrypt
+  annaquiz:
+    image: mz47/annaquiz:latest
+    container_name: annaquiz
+    environment:
+      - ENV=LIVE
+    volumes:
+      - ./annaquiz-data:/app/db
+    ports:
+      - 8001
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.annaquiz.rule=Host(`annaquiz.de`) || Host(`www.annaquiz.de`)
+      - traefik.http.routers.annaquiz.entrypoints=websecure
+      - traefik.http.routers.annaquiz.tls=true
+      - traefik.http.routers.annaquiz.tls.certresolver=letsencrypt

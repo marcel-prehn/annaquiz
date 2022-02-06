@@ -2,11 +2,14 @@ package service
 
 import (
 	"github.com/google/uuid"
+	"log"
 	"marcel.works/annaquiz/app/model"
 	"marcel.works/annaquiz/app/repository"
 	"math/rand"
 	"time"
 )
+
+const Limit = 3
 
 type service struct {
 	quizRepository   repository.QuizRepository
@@ -74,15 +77,29 @@ func (s *service) GetRandomAnswersByQuiz(quizUuid string) ([]model.Answer, error
 		return nil, err
 	}
 
-	counter := 0
-	for counter < 3 {
-		answer := answers[rand.Intn(len(answers)-1)]
-		if !s.contains(&result, answer.QuestionUuid) {
-			result = append(result, answer)
-			counter = counter + 1
+	log.Println("quiz uuid:", quizUuid)
+	log.Println("no answers:", len(answers))
+
+	if len(answers) == 3 {
+		return s.shuffle(answers), nil
+	} else {
+		counter := 0
+		for counter < Limit {
+			answer := answers[rand.Intn(len(answers)-1)]
+			if !s.contains(&result, answer.QuestionUuid) {
+				result = append(result, answer)
+				counter = counter + 1
+			}
 		}
+		return result, nil
 	}
-	return result, nil
+}
+
+func (s *service) shuffle(answers []model.Answer) []model.Answer {
+	result := answers
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(result), func(i, j int) { result[i], result[j] = result[j], result[i] })
+	return result
 }
 
 func (s *service) contains(list *[]model.Answer, uuid string) bool {
