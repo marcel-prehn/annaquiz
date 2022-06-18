@@ -1,6 +1,9 @@
 package app
 
 import (
+	"os"
+
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"marcel.works/annaquiz/app/handler"
@@ -30,5 +33,9 @@ func (a *app) Run() {
 	router.POST("/api/quiz/:uuid/answers", apiHandler.NewAnswers)
 	router.GET("/api/quiz/:uuid/answers", apiHandler.GetAnswers)
 	router.GET("/api/quiz/:uuid/random", apiHandler.GetRandomAnswers)
+	if os.Getenv("ENV") == "LIVE" {
+		prom := prometheus.NewPrometheus("annaquiz", nil)
+		prom.Use(router)
+	}
 	router.Start(":8001")
 }

@@ -1,2 +1,2 @@
-docker build -t mz47/annaquiz:1.1.0 .
-docker push mz47/annaquiz:1.1.0
+docker build -t mz47/annaquiz:latest .
+docker push mz47/annaquiz:latest

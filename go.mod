@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/google/uuid v1.1.2
+	github.com/labstack/echo-contrib v0.12.0
 	github.com/labstack/echo/v4 v4.6.3
 	github.com/tidwall/btree v0.3.0 // indirect
 	github.com/tidwall/buntdb v1.1.4
